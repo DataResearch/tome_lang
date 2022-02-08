@@ -1,6 +1,9 @@
+#![allow(dead_code)]
+mod iter;
 pub mod file;
 pub mod token;
 pub mod tokenizer;
+pub mod predicate;
 
 #[cfg(test)]
 mod tests {

@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use tome;
+use tome::{self, token::TokenStream};
 
 const PREANALYTICAL: u32 = 0b00000001;
 const LEXICAL: u32 = 0b00000010;
@@ -40,16 +40,14 @@ impl VerboseOutputOptions {
 }
 
 struct Pipeline {
-    option: VerboseOutputOptions,
-    lexer: tome::tokenizer::Tokenizer
+    option: VerboseOutputOptions
 }
 
 impl Pipeline {
 
     fn new(flags: VerboseOutputOptions) -> Pipeline {
         Pipeline { 
-            option: flags,
-            lexer: tome::tokenizer::Tokenizer::new() 
+            option: flags
         }
     }
 
@@ -59,11 +57,13 @@ impl Pipeline {
             println!("{:?}", code);
         }
 
-        let tokens = self.lexer.tokenize(code);
+        let lexer = tome::tokenizer::LexicalTokenIterator::new(code.chars());
+        let tokens: TokenStream = lexer.collect();
 
         if self.option.is_lexical() {
             println!("{:?}", tokens);
         }
+        
     }
 
 }

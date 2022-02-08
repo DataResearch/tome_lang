@@ -1,14 +1,18 @@
 
 #[derive(Debug, Clone)]
+
+// TODO (@CodingChris): replace bracket and delimeter with type enums
+// don't use strings - this is pretty uncool down the road
 pub enum Token {
     Operator(String),
     IntegerLiteral(String),
     FloatingPointLiteral(String),
     StringLiteral(String),
     Identifier(String),
-    Bracket(char),
-    Keywork(String),
-    Delimeter(char),
+    Bracket(String),
+    Keyword(String),
+    Delimiter(String),
+    Dot,
     
     // Control Tokens
     Unknown,
@@ -18,12 +22,15 @@ pub enum Token {
 
 pub type TokenStream = Vec<Token>;
 
+// TODO (@CodingChris): do we want to recognize some textual
+// representations as operators? i.e. and, or, not, eq, ...
 pub const OPERATORS: &[&str] = &[
     // logical operators
-    "==", ">=", "<=", ">", "<",
+    "==", ">=", "<=", "=>", "=<", ">", "<", "<=>",
 
     // boolean logic & bitwise manipulation
-    "~", "|", "&", "!", "||", "&&", "^",
+    "~", "|", "&", "^",
+    "!", "||", "&&", 
 
     // math operators where // is integer devision and % is remainder / modulo
     "+", "-", "*", "/", "//", "%", 
@@ -61,22 +68,23 @@ pub const KEYWORDS: &[&str] = &[
     "const", "let",
 
     // type related keywords
-    "fn", "struct", 
+    "fn", "struct", "class", "union", "enum",
     "int", "float", "bool",
 
     // TODO (@CodingChris): maybe I want to support operator overloading sometimes?
     "operator",
 
-    // truth values
-    "false", "true",
+    // values
+    "false", "true", "null",
 
     // conditionals 
     "if", "else", "elif",
+    "switch", "match",
 
     // loops
     "while", "for", "loop",
 
     // async programming
-    "async", "await"];
-
-pub const WHITESPACES: &[&str] = &[" ", "\t", "\r", "\n"];
+    "async", "await",
+    
+    "final", "static", "void", "public", "private", "protected", "interface", "unsafe", "mutable", "mut"];
