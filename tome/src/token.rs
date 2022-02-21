@@ -5,8 +5,9 @@
 // don't use strings - this is pretty uncool down the road
 pub enum Token {
     Operator(String),
-    IntegerLiteral(String),
-    FloatingPointLiteral(String),
+    // Intermediate element can be combined by a <NumericCombination><Dot><NumericCombination> into a floating point literal
+    // is an integer literal otherwise
+    Numeric(String),
     StringLiteral(String),
     Identifier(String),
     Bracket(String),
@@ -72,7 +73,7 @@ pub const KEYWORDS: &[&str] = &[
     "int", "float", "bool",
 
     // TODO (@CodingChris): maybe I want to support operator overloading sometimes?
-    "operator",
+    "operator", "ctor", "dtor", "move", "copy",
 
     // values
     "false", "true", "null",
@@ -87,4 +88,5 @@ pub const KEYWORDS: &[&str] = &[
     // async programming
     "async", "await",
     
-    "final", "static", "void", "public", "private", "protected", "interface", "unsafe", "mutable", "mut"];
+    "final", "static", "void", "public", "private", "protected", "interface", 
+    "unsafe", "mutable", "mut", "ref", "virtual", "override"];

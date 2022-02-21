@@ -38,24 +38,9 @@ impl<T> Iterator for LexicalTokenIterator<T>
         // as a copy type instead of a reference. The usages of & in the predicates look weired now.
         if let Some(&x) = self.code.peek() {
 
-            // test for numerics / integer floatingpoint literal
             if predicate::is_numeric(&x) {
-
-                // TODO (@CodingChris): This also matches 123.21. <-- the last point shouldn't be part of the match...
-                // Only the first point until no more numbers occur. 
-                // Consider 123.. an error and 234.32.call() as 234.32 flotaing point literal
-                let numeric_literal = self.code.blocking_take(|x| predicate::is_numeric(x) || x == &'.');
-
-                // TODO (@CodingChris): this looks unneccecary - we should use a function object thing to control the
-                // state and operation of blocking_take. This requires us to implement the Fn/FnMut trait. Which is - not optimal?
-                let literal_string: String = numeric_literal.into_iter().collect();
-                if literal_string.contains(".") {
-                    return Some(Token::IntegerLiteral(literal_string));
-                }
-                else {
-                    return Some(Token::FloatingPointLiteral(literal_string));
-                }
-                
+                let numeric_literal = self.code.blocking_take(predicate::is_numeric);
+                return Some(Token::Numeric(numeric_literal.into_iter().collect()));
             }
 
             // test for string literals

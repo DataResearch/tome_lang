@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 mod iter;
+mod token_parser;
 pub mod file;
 pub mod token;
 pub mod tokenizer;
