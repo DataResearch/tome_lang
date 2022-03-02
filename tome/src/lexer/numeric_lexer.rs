@@ -4,11 +4,11 @@ use crate::token::Token;
 use crate::predicate;
 use super::lexer::{self, LexicalError};
 
-struct NumericLexer{}
+pub struct NumericLexer{}
 
 impl lexer::Lexer for NumericLexer {
     
-    fn parse_numeric_literal<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
+    fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
     {
         let peek = iterator.peek();
@@ -21,11 +21,11 @@ impl lexer::Lexer for NumericLexer {
                 Ok(Token::Numeric(chars.into_iter().collect()))
             }
             else {
-                Err(LexicalError::UnexpectedSymbol(character))
+                Err(LexicalError::UnexpectedSymbol(*character))
             }
         }
         else {
-            Err(LexicalError::UnexpectedEndOfStream());
+            Err(LexicalError::UnexpectedEndOfStream())
         }
     }
 }

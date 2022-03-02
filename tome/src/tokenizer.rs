@@ -1,6 +1,8 @@
+use crate::lexer::lexer::Lexer;
 use crate::token::{Token, OPERATORS, DELIMETERS, KEYWORDS, BRACKETS};
 use crate::iter::BlockingIter;
 use crate::predicate;
+use crate::lexer::numeric_lexer::NumericLexer;
 
 use std::iter::{Iterator, Peekable};
 
@@ -38,9 +40,12 @@ impl<T> Iterator for LexicalTokenIterator<T>
         // as a copy type instead of a reference. The usages of & in the predicates look weired now.
         if let Some(&x) = self.code.peek() {
 
+            // Parse numeric token
             if predicate::is_numeric(&x) {
-                let numeric_literal = self.code.blocking_take(predicate::is_numeric);
-                return Some(Token::Numeric(numeric_literal.into_iter().collect()));
+
+                if let Ok(token) = NumericLexer::lexing(&mut self.code) {
+                    return Some(token);
+                }
             }
 
             // test for string literals

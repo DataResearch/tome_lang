@@ -1,15 +1,14 @@
 use std::iter::{Peekable, Iterator};
-use crate::iter::{BlockingIter, self};
 use crate::token::Token;
 use crate::predicate;
 
 use super::lexer::{Lexer, LexicalError};
 
-struct BracketLexer{}
+pub struct BracketLexer{}
 
 impl Lexer for BracketLexer {
     
-    fn parse_numeric_literal<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
+    fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
     {
         let value = iterator.next();

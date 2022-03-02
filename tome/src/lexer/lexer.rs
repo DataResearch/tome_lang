@@ -9,6 +9,6 @@ pub enum LexicalError {
 
 
 pub trait Lexer {
-    fn parse_numeric_literal<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
+    fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char>;
 }
