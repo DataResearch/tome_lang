@@ -11,15 +11,21 @@ impl lexer::Lexer for NumericLexer {
     fn parse_numeric_literal<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
     {
+        let peek = iterator.peek();
 
-        let chars = iterator.blocking_take(predicate::is_numeric);
+        if let Some(character) = peek {
 
-        if !chars.is_empty() {
-            Ok(Token::Numeric(chars.into_iter().collect()))
+            let chars = iterator.blocking_take(predicate::is_numeric);
+
+            if !chars.is_empty() {
+                Ok(Token::Numeric(chars.into_iter().collect()))
+            }
+            else {
+                Err(LexicalError::UnexpectedSymbol(character))
+            }
         }
         else {
-            Err(LexicalError::UnexpectedSymbol(iterator.peek().unwrap_or(&" ")))
+            Err(LexicalError::UnexpectedEndOfStream());
         }
-
     }
 }
