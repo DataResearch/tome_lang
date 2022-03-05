@@ -42,7 +42,6 @@ pub fn is_symbol(x: &char) -> bool {
         '=' => true,
         '%' => true,
         '.' => true,
-        '_' => true,
         '°' => true,
         _ => false
     }
@@ -54,6 +53,13 @@ pub fn is_bracket(x: &char) -> bool {
         '(' | ')' => true, // function call and precendence
         '{' | '}' => true, // code blocks
         '[' | ']' => true, // lists, arrays, subscripts
+        _ => false
+    }
+}
+
+pub fn is_delimeter(x: &char) -> bool {
+    match x {
+        ',' | ':' | ';' => true,
         _ => false
     }
 }

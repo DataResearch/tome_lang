@@ -3,10 +3,10 @@ use crate::token::Token;
 
 pub enum LexicalError {
     UnexpectedSymbol(char),
+    UnexpectedSymbolSequence(String),
     UnexpectedEndOfStream(),
 
 }
-
 
 pub trait Lexer {
     fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 

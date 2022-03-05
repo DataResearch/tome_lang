@@ -12,8 +12,9 @@ impl lexer::Lexer for NumericLexer {
         where I: Iterator<Item=char> 
     {
         let peek = iterator.peek();
+        let temporary = peek.map_or(None, |x| Some(*x));
 
-        if let Some(character) = peek {
+        if let Some(character) = temporary {
 
             let chars = iterator.blocking_take(predicate::is_numeric);
 
@@ -21,7 +22,7 @@ impl lexer::Lexer for NumericLexer {
                 Ok(Token::Numeric(chars.into_iter().collect()))
             }
             else {
-                Err(LexicalError::UnexpectedSymbol(*character))
+                Err(LexicalError::UnexpectedSymbol(character))
             }
         }
         else {
