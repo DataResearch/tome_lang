@@ -10,9 +10,9 @@ pub enum Token {
     Numeric(String),
     StringLiteral(String),
     Identifier(String),
-    Bracket(String),
+    Bracket(char),
     Keyword(String),
-    Delimiter(String),
+    Delimiter(char),
     Dot,
     
     // Control Tokens

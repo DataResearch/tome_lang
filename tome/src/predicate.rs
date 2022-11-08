@@ -38,12 +38,28 @@ pub fn is_symbol(x: &char) -> bool {
         '{' | '}' => true,
         '[' | ']' => true, 
         '~' | '!' => true,
-        '#' | '?' => true,
+        '#' | '?' => true, // TODO (@CodingChris): leverave # annotated code to be used at compiletime?
         '=' => true,
         '%' => true,
         '.' => true,
-        '_' => true,
         '°' => true,
+        _ => false
+    }
+}
+
+pub fn is_bracket(x: &char) -> bool { 
+    match x {
+        '<' | '>' => true, // meta programming and generic brackets
+        '(' | ')' => true, // function call and precendence
+        '{' | '}' => true, // code blocks
+        '[' | ']' => true, // lists, arrays, subscripts
+        _ => false
+    }
+}
+
+pub fn is_delimeter(x: &char) -> bool {
+    match x {
+        ',' | ':' | ';' => true,
         _ => false
     }
 }

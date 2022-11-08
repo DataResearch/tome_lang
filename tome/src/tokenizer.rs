@@ -1,6 +1,14 @@
-use crate::token::{Token, OPERATORS, DELIMETERS, KEYWORDS, BRACKETS};
+use crate::lexer::lexer::Lexer;
+use crate::token::{Token, KEYWORDS};
 use crate::iter::BlockingIter;
 use crate::predicate;
+use crate::lexer::{
+    numeric_lexer::NumericLexer,
+    string_literal_lexer::StringLiteralLexer,
+    bracket_lexer::BracketLexer,
+    delimeter_lexer::DelimeterLexer,
+    operator_lexer::OperatorLexer
+};
 
 use std::iter::{Iterator, Peekable};
 
@@ -38,48 +46,58 @@ impl<T> Iterator for LexicalTokenIterator<T>
         // as a copy type instead of a reference. The usages of & in the predicates look weired now.
         if let Some(&x) = self.code.peek() {
 
+            // Parse numeric token
             if predicate::is_numeric(&x) {
-                let numeric_literal = self.code.blocking_take(predicate::is_numeric);
-                return Some(Token::Numeric(numeric_literal.into_iter().collect()));
+                if let Ok(token) = NumericLexer::lexing(&mut self.code) {
+                    return Some(token);
+                }
+                else {
+                    return Some(Token::Unknown);
+                }
             }
 
             // test for string literals
             if x == '"' {
+                if let Ok(token) = StringLiteralLexer::lexing(&mut self.code) {
+                    return Some(token);
+                }
+                else {
+                    return Some(Token::Unknown);
+                }
+            }
             
-                // take everything until we find a " codepoint. This is the end!
-                // TODO (@CodingChris): make it better - it hurts my eyes
-                // also: test if >> " this is part of a li EOF<< creates issues or crashes..
-                self.code.next(); // cut of " codepoint
-                let string_literal = self.code.blocking_take(|x| x != &'"');
-                self.code.next(); // cut of " codepoint
-
-                let string: String = string_literal.into_iter().collect();
-                return Some(Token::StringLiteral(string));
-
+            // test for dot operation as it is special
+            if x == '.' {
+                let _ = self.code.next();
+                return Some(Token::Dot);
             }
 
-            // test for operators, brackets, seperators, dots, ...
-            if predicate::is_symbol(&x) {
-            
-                let symbol_list = self.code.blocking_take(predicate::is_symbol);
-                let symbol: String = symbol_list.into_iter().collect();
+            if predicate::is_bracket(&x) {
+                if let Ok(token) = BracketLexer::lexing(&mut self.code) {
+                    return Some(token);
+                }
+                else {
+                    return Some(Token::Unknown);
+                }
+            }
 
-                // test for the very unique dot operator
-                if symbol == "." {
-                    return Some(Token::Dot);
+            if predicate::is_delimeter(&x) {
+                if let Ok(token) = DelimeterLexer::lexing(&mut self.code) {
+                    return Some(token);
                 }
-                // TODO (@CodingChris): operator much? - clean this up
-                if OPERATORS.contains(&symbol.as_ref()) {
-                    return Some(Token::Operator(symbol));
+                else {
+                    return Some(Token::Unknown);
                 }
-                if BRACKETS.contains(&symbol.as_ref()) {
-                    return Some(Token::Bracket(symbol));
+            }
+
+            // operators
+            if predicate::is_symbol(&x) {
+                if let Ok(token) = OperatorLexer::lexing(&mut self.code) {
+                    return Some(token);
                 }
-                if DELIMETERS.contains(&symbol.as_ref()) {
-                    return Some(Token::Delimiter(symbol));
+                else {
+                    return Some(Token::Unknown);
                 }
-                
-                return Some(Token::Unknown);
             }
 
             // test for keywords and literals (literals have their own predicate)
