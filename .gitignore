@@ -1,2 +1,3 @@
 target/
 compile/Cargo.lock
+.idea/
