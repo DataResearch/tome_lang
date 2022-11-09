@@ -1,10 +1,11 @@
 #![allow(dead_code)]
-mod iter;
-mod lexer;
-pub mod file;
+pub mod extensions;
+pub mod lexer;
+pub mod parser;
 pub mod token;
+
+pub mod file;
 pub mod tokenizer;
-pub mod predicate;
 
 #[cfg(test)]
 mod tests {

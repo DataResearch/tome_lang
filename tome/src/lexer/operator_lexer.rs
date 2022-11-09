@@ -2,11 +2,11 @@ use std::iter::{Peekable, Iterator};
 use crate::{iter::BlockingIter, token::OPERATORS};
 use crate::token::Token;
 use crate::predicate;
-use super::lexer::{self, LexicalError};
+use super::lexer::{Lexer, LexicalError};
 
 pub struct OperatorLexer{}
 
-impl lexer::Lexer for OperatorLexer {
+impl Lexer for OperatorLexer {
     
     fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
