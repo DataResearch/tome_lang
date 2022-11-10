@@ -1,7 +1,6 @@
 use std::iter::{Peekable, Iterator};
-use crate::{iter::BlockingIter, token::OPERATORS};
-use crate::token::Token;
-use crate::predicate;
+use crate::extensions::iter::BlockingIter;
+use crate::token::{predicate, token::Token, token::OPERATORS};
 use super::lexer::{Lexer, LexicalError};
 
 pub struct OperatorLexer{}
@@ -11,22 +10,22 @@ impl Lexer for OperatorLexer {
     fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
     {
-        let peek = iterator.peek();
+        let peek = iterator.peek().map_or(None, |x| Some(*x));
+        let operatorBlob = iterator.blocking_take(predicate::is_symbol);
 
-        if let Some(_) = peek {
+        if operatorBlob.is_empty() {
+            return match peek {
+                Some(value) => Err(LexicalError::UnexpectedSymbol(value)),
+                _ => Err(LexicalError::UnexpectedEndOfStream)
+            };
+        }
 
-            let chars = iterator.blocking_take(predicate::is_symbol);
-            let symbols: String = chars.into_iter().collect();
-
-            if OPERATORS.contains(&(&symbols as &str)) {
-                return Ok(Token::Operator(symbols));
-            }
-            else {
-                return Err(LexicalError::UnexpectedSymbolSequence(symbols));
-            }
+        let operatorCandidate: String = operatorBlob.into_iter().collect();
+        if OPERATORS.contains(&(&operatorCandidate as &str)) {
+            return Ok(Token::Operator(operatorCandidate));
         }
         else {
-            Err(LexicalError::UnexpectedEndOfStream())
+            return Err(LexicalError::UnexpectedSymbolSequence(operatorCandidate));
         }
     }
 }

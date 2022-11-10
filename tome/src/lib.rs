@@ -3,8 +3,8 @@ pub mod extensions;
 pub mod lexer;
 pub mod parser;
 pub mod token;
+pub mod tokenstream;
 
-pub mod file;
 pub mod tokenizer;
 
 #[cfg(test)]
