@@ -26,5 +26,9 @@ impl Lexer for StringLiteralLexer {
         let replacementMap: HashMap<_, _> =
             collection!{r#"\""# => r#"""#, r#"\\"# => r#"\"#};
 
+        let concat = |bufA, bufB| [bufA, bufB].concat();
+        let mut buffer = Vec::new();
+
+
     }
 }
