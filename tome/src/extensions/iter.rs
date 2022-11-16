@@ -8,6 +8,7 @@ pub trait BlockingIter<I, T>: where I: Iterator<Item=T>{
     fn blocking_take_until(&mut self, predicate: impl Fn(&I::Item)->bool) -> (Vec<I::Item>, IteratorStateInfo);
 }
 
+#[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub enum IteratorStateInfo {
     OperationCompleted,
     OperationExhausted
