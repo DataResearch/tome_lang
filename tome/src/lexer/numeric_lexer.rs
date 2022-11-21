@@ -7,7 +7,7 @@ use super::lexer::{Lexer, LexicalError};
 pub struct NumericLexer{}
 
 impl Lexer for NumericLexer {
-    
+    // TODO (@CodingChris): we should handle numeric literatals for octal, hex, and binary
     fn lexing<I> (iterator: &mut Peekable<I>) -> Result<Token, LexicalError> 
         where I: Iterator<Item=char> 
     {
